@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jarvis_assistent/Models/message_model.dart';
+import 'package:jarvis_assistent/Chat/message_model.dart';
+import 'package:jarvis_assistent/Utils/configs.dart';
+import 'package:jarvis_assistent/Utils/utils.dart';
 import 'package:jarvis_assistent/Themes/themes.dart';
-import 'package:jarvis_assistent/about_screen.dart';
-import 'package:jarvis_assistent/login.dart';
+import 'package:jarvis_assistent/About/about_screen.dart';
+import 'package:jarvis_assistent/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Mainscreen extends StatefulWidget {
@@ -156,12 +158,24 @@ class _MainscreenState extends State<Mainscreen> {
             decoration: BoxDecoration(
               color: AppTheme.secondaryColor,
             ),
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: AppTheme.textColor,
-                fontSize: 24,
-              ),
+            child:  Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: loggedUser.photoUrl != null && loggedUser.photoUrl!.isNotEmpty
+                      ? NetworkImage(loggedUser.photoUrl!)
+                      : Icons.account_box as ImageProvider,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Sr. ${loggedUser.username}",
+                  style: TextStyle(
+                    color: AppTheme.textColor,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(
@@ -180,7 +194,8 @@ class _MainscreenState extends State<Mainscreen> {
             leading: Icon(Icons.logout, color: AppTheme.secondaryColor),
             title: const Text('Logout'),
             textColor: AppTheme.textColor,
-            onTap: () {
+            onTap: () async {
+              await signOut();
               Navigator.pop(context); // Close the drawer
               Navigator.push(
                   context,

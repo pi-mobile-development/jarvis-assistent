@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "450684093170",
+    "project_id": "jarvis-assistant-958d5",
+    "storage_bucket": "jarvis-assistant-958d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450684093170:android:f26db28f7920c06be4066b",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450684093170-ni5aooqohg4oe1b9u23fks6ihvhot5sa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_application_1",
+            "certificate_hash": "f83731f055866881e1d9f025c23659142782a43e"
+          }
+        },
+        {
+          "client_id": "450684093170-d4cp9b0lm9iidten0fts5b2sl6jiqj3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByqMX_fTHSe8mQN9ti39KoEPiGcj5CaxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450684093170-d4cp9b0lm9iidten0fts5b2sl6jiqj3l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
