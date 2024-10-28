@@ -1,4 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:jarvis_assistent/Chat/controllers/gemini_controller.dart';
+import 'package:jarvis_assistent/Chat/core/appConfig.dart';
 import 'package:jarvis_assistent/Chat/message_model.dart';
 import 'package:jarvis_assistent/Utils/configs.dart';
 import 'package:jarvis_assistent/Utils/utils.dart';
@@ -6,6 +11,7 @@ import 'package:jarvis_assistent/Themes/themes.dart';
 import 'package:jarvis_assistent/About/about_screen.dart';
 import 'package:jarvis_assistent/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 
 class Mainscreen extends StatefulWidget {
   const Mainscreen({super.key});
@@ -19,6 +25,20 @@ class _MainscreenState extends State<Mainscreen> {
   final _scrollController = ScrollController();
   final _messages = <MessageModel>[];
   bool _isRecording = false;
+  bool _isLoading = false;
+  bool _isPicked = false;
+  late final GeminiController _controller;
+  final imagePicker = ImagePicker();
+  File? imageFile;
+
+  void initState(){
+    _controller = GeminiController(
+      GenerativeModel(
+        model: 'gemini-1.5-flash', 
+        apiKey: AppConfig.API_KEY)
+      )..startChat();
+    super.initState();
+  }
 
   void scrollDown() {
     Future.delayed(
@@ -44,6 +64,12 @@ class _MainscreenState extends State<Mainscreen> {
             children: [
               Expanded(
                 child: _buildMessageView()
+              ),
+              if(_isLoading) // Exibe o ícone de carregamento quando _isLoading for true
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: LinearProgressIndicator(backgroundColor:Color(0xFF1A1A1A),color: Color(0xff9489F5),),
+                  
               ),
               Divider(height: 1, color: AppTheme.secondaryColor),
               _buildInputBar(),
@@ -105,7 +131,7 @@ class _MainscreenState extends State<Mainscreen> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.camera_alt),
+            icon: Icon( _isPicked ? Icons.check : Icons.add_photo_alternate),
             onPressed: _pickImage,
             color: AppTheme.secondaryColor,
           ),
@@ -212,18 +238,30 @@ class _MainscreenState extends State<Mainscreen> {
   void _sendMessage() async {
     if (_textInputController.text.isNotEmpty) {
       final prompt = _textInputController.text;
+      _isLoading = true;
       setState(() {
         _messages
             .add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
         _textInputController.clear();
         scrollDown();
       });
+      
+      String resp;
 
+      if(imageFile != null){
+        resp = await _controller.onSendImageMessage(prompt,imageFile!);
+      }else{
+        resp = await _controller.onSendMessage(prompt);
+      }
+      
       setState(() {
+        imageFile = null;
+        _isPicked = false;
         _messages.add(MessageModel(
-            message: 'Resposta padrao', messageFrom: MessageFrom.IA));
+            message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
       });
+      _isLoading = false;
     }
   }
 
@@ -235,7 +273,20 @@ class _MainscreenState extends State<Mainscreen> {
 
   Future<void> _pickImage() async {
     if (await Permission.camera.request().isGranted) {
-      //camera
+      if(imageFile != null){
+        setState(() {
+          imageFile = null;
+          _isPicked = false;
+        });
+      }else{
+      final pickedFile =  await imagePicker.pickImage(source: ImageSource.gallery);
+      if(pickedFile != null){
+        setState(() {
+          imageFile = File(pickedFile.path);
+          _isPicked = true;
+        });
+      }
+      }
     }
   }
 }
