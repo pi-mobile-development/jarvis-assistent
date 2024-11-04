@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:jarvis_assistent/Utils/db.dart';
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +12,7 @@ import 'package:jarvis_assistent/Themes/themes.dart';
 import 'package:jarvis_assistent/About/about_screen.dart';
 import 'package:jarvis_assistent/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sqflite/sqflite.dart';
 
 
 class Mainscreen extends StatefulWidget {
@@ -29,12 +32,25 @@ class _MainscreenState extends State<Mainscreen> {
   late final GeminiController _controller;
   final imagePicker = ImagePicker();
   File? imageFile;
+  late final DatabaseMessages _database;
 
-  void initState(){
+
+  Future<void> initState() async {
+    _database = DatabaseMessages(
+      await openDatabase(
+      join(await getDatabasesPath(), 'messagesDB.db'),
+      onCreate: ( db, version){
+        return db.execute(
+          'CREATE TABLE messages(id INTEGER PRIMARY KEY, message TEXT, who TEXT)'
+        );
+      },
+      version: 1
+    ));
     _controller = GeminiController(
       GenerativeModel(
         model: 'gemini-1.5-flash', 
-        apiKey: API_KEY)
+        apiKey: API_KEY),
+        _database
       )..startChat();
     super.initState();
   }
@@ -106,7 +122,7 @@ class _MainscreenState extends State<Mainscreen> {
               const Spacer(),
             Container(
               margin: const EdgeInsets.all(12),
-              width: MediaQuery.of(context).size.width * 0.7,
+              width: MediaQuery.of(context as BuildContext).size.width * 0.7,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                   color: _messages[index].messageFrom == MessageFrom.USER
@@ -208,9 +224,9 @@ class _MainscreenState extends State<Mainscreen> {
             title: const Text('About App'),
             textColor: AppTheme.textColor,
             onTap: () {
-              Navigator.pop(context); 
+              Navigator.pop(context as BuildContext); 
               Navigator.push(
-                  context,
+                  context as BuildContext,
                   MaterialPageRoute(builder: (context) => AboutPage()),
                 );
             },
@@ -221,9 +237,9 @@ class _MainscreenState extends State<Mainscreen> {
             textColor: AppTheme.textColor,
             onTap: () async {
               await signOut();
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context as BuildContext); // Close the drawer
               Navigator.push(
-                  context,
+                  context as BuildContext,
                   MaterialPageRoute(builder: (context) => LoginPage()),
                 );
             },
