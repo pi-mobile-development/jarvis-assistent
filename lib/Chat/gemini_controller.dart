@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:jarvis_assistent/Chat/message_model.dart';
 import 'package:jarvis_assistent/Utils/db.dart';
 
 
@@ -9,8 +10,9 @@ import 'package:jarvis_assistent/Utils/db.dart';
 class GeminiController {
   final GenerativeModel _model;
   final DatabaseMessages _database;
+  int cont;
 
-  GeminiController(this._model, this._database);
+  GeminiController(this._model, this._database,this.cont);
 
   final isLoading = ValueNotifier(false);
 
@@ -56,7 +58,8 @@ class GeminiController {
     final iaResponse = await _chat.sendMessage(Content.text(prompt));
 
     if(iaResponse.text != null){
-     
+      final message = MessageModel(id: await _database.contQuerry(), message: iaResponse.text!, messageFrom: MessageFrom.IA);
+      _database.insertMessage(message);
     }
 
   
@@ -73,7 +76,8 @@ class GeminiController {
     var iaResponse = await _chat.sendMessage(content);
 
     if(iaResponse.text != null){
-      
+      final message = MessageModel(id:await _database.contQuerry(), message: iaResponse.text!, messageFrom: MessageFrom.IA);
+      _database.insertMessage(message);      
     }
     
 

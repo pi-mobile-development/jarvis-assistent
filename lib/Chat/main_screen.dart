@@ -43,14 +43,15 @@ class _MainscreenState extends State<Mainscreen> {
         return db.execute(
           'CREATE TABLE messages(id INTEGER PRIMARY KEY, message TEXT, who TEXT)'
         );
-      },
+      },      
       version: 1
     ));
     _controller = GeminiController(
       GenerativeModel(
         model: 'gemini-1.5-flash', 
         apiKey: API_KEY),
-        _database
+        _database,
+        await _database.contQuerry()
       )..startChat();
     super.initState();
   }
@@ -254,9 +255,9 @@ class _MainscreenState extends State<Mainscreen> {
     if (_textInputController.text.isNotEmpty) {
       final prompt = _textInputController.text;
       _isLoading = true;
-      setState(() {
-        _messages
-            .add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
+      setState(() async {
+        final message = MessageModel(id:await _database.contQuerry(), message: prompt, messageFrom: MessageFrom.USER);
+        _database.insertMessage(message);
         _textInputController.clear();
         scrollDown();
       });
@@ -269,11 +270,11 @@ class _MainscreenState extends State<Mainscreen> {
         resp = await _controller.onSendMessage(prompt);
       }
       
-      setState(() {
+      setState(() async {
         imageFile = null;
         _isPicked = false;
         _messages.add(MessageModel(
-            message: resp, messageFrom: MessageFrom.IA));
+          id: await _database.contQuerry(),  message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
       });
       _isLoading = false;
