@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:jarvis_assistant/Prompt/prompt_db.dart';
-import 'package:path/path.dart';
+import 'package:jarvis_assistant/Prompt/prompt_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +11,6 @@ import 'package:jarvis_assistant/Themes/themes.dart';
 import 'package:jarvis_assistant/About/about_screen.dart';
 import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sqflite/sqflite.dart';
 
 
 class Mainscreen extends StatefulWidget {
@@ -212,11 +210,23 @@ class _MainscreenState extends State<Mainscreen> {
             title: const Text('About App'),
             textColor: AppTheme.textColor,
             onTap: () {
-              Navigator.pop(context as BuildContext); 
+              Navigator.pop(context as BuildContext);
               Navigator.push(
                   context as BuildContext,
                   MaterialPageRoute(builder: (context) => AboutPage()),
                 );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.terminal_sharp, color: AppTheme.secondaryColor),
+            title: const Text('Prompts'),
+            textColor: AppTheme.textColor,
+            onTap: () {
+              Navigator.pop(context as BuildContext);
+              Navigator.push(
+                context as BuildContext,
+                MaterialPageRoute(builder: (context) => const PromptsScreen()),
+              );
             },
           ),
           ListTile(
