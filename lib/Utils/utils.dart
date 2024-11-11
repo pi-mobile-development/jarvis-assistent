@@ -1,4 +1,4 @@
-import 'package:jarvis_assistent/Utils/configs.dart';
+import 'package:jarvis_assistant/Utils/configs.dart';
 
 import '../Login/login_model.dart';
 

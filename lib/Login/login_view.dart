@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jarvis_assistent/Themes/themes.dart';
-import 'package:jarvis_assistent/Chat/main_screen.dart';
-import 'package:jarvis_assistent/Login/login_controller.dart';
+import 'package:jarvis_assistant/Themes/themes.dart';
+import 'package:jarvis_assistant/Chat/main_screen.dart';
+import 'package:jarvis_assistant/Login/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

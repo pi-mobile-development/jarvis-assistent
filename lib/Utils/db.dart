@@ -1,6 +1,6 @@
-import 'dart:ffi';
+//import 'dart:ffi';
 
-import 'package:jarvis_assistent/Chat/message_model.dart';
+import 'package:jarvis_assistant/Chat/message_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseMessages {

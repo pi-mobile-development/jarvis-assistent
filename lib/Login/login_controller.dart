@@ -1,6 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:jarvis_assistent/Utils/configs.dart';
+import 'package:jarvis_assistant/Utils/configs.dart';
 import '../Utils/utils.dart';
 import 'login_model.dart';
 

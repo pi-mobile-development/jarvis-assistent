@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jarvis_assistent/Chat/main_screen.dart';
-import 'package:jarvis_assistent/Login/login_view.dart';
+import 'package:jarvis_assistant/Chat/main_screen.dart';
+import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:jarvis_assistent/Utils/configs.dart';
-import 'package:jarvis_assistent/Utils/utils.dart';
+import 'package:jarvis_assistant/Utils/configs.dart';
+import 'package:jarvis_assistant/Utils/utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +17,7 @@ Future<void> main() async {
 class MainApp extends StatelessWidget {
   final bool isLoggedIn;
 
-  MainApp({required this.isLoggedIn});
+  const MainApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {

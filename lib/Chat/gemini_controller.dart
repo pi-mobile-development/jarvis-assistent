@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:jarvis_assistent/Chat/message_model.dart';
-import 'package:jarvis_assistent/Utils/db.dart';
+import 'package:jarvis_assistant/Chat/message_model.dart';
+import 'package:jarvis_assistant/Utils/db.dart';
 
 
 

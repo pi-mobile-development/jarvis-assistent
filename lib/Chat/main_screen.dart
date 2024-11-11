@@ -1,16 +1,16 @@
 import 'dart:io';
-import 'package:jarvis_assistent/Utils/db.dart';
+import 'package:jarvis_assistant/Utils/db.dart';
 import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jarvis_assistent/Chat/gemini_controller.dart';
-import 'package:jarvis_assistent/Chat/message_model.dart';
-import 'package:jarvis_assistent/Utils/configs.dart';
-import 'package:jarvis_assistent/Utils/utils.dart';
-import 'package:jarvis_assistent/Themes/themes.dart';
-import 'package:jarvis_assistent/About/about_screen.dart';
-import 'package:jarvis_assistent/Login/login_view.dart';
+import 'package:jarvis_assistant/Chat/gemini_controller.dart';
+import 'package:jarvis_assistant/Chat/message_model.dart';
+import 'package:jarvis_assistant/Utils/configs.dart';
+import 'package:jarvis_assistant/Utils/utils.dart';
+import 'package:jarvis_assistant/Themes/themes.dart';
+import 'package:jarvis_assistant/About/about_screen.dart';
+import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
 
