@@ -11,6 +11,7 @@ void setLoggedUser() {
   loggedUser = UserModel(
       username: auth.currentUser!.displayName!,
       email: auth.currentUser!.email!,
+      userID: auth.currentUser!.uid,
       photoUrl: auth.currentUser!.photoURL
   );
 }

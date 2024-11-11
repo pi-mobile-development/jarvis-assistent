@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:jarvis_assistant/Utils/db.dart';
+import 'package:jarvis_assistant/Prompt/prompt_db.dart';
 import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -32,27 +32,14 @@ class _MainscreenState extends State<Mainscreen> {
   late final GeminiController _controller;
   final imagePicker = ImagePicker();
   File? imageFile;
-  late final DatabaseMessages _database;
 
-
-  Future<void> initState() async {
-    _database = DatabaseMessages(
-      await openDatabase(
-      join(await getDatabasesPath(), 'messagesDB.db'),
-      onCreate: ( db, version){
-        return db.execute(
-          'CREATE TABLE messages(id INTEGER PRIMARY KEY, message TEXT, who TEXT)'
-        );
-      },      
-      version: 1
-    ));
+  @override
+  void initState() {
     _controller = GeminiController(
       GenerativeModel(
         model: 'gemini-1.5-flash', 
         apiKey: API_KEY),
-        _database,
-        await _database.contQuerry()
-      )..startChat();
+        )..startChat();
     super.initState();
   }
 
@@ -255,9 +242,8 @@ class _MainscreenState extends State<Mainscreen> {
     if (_textInputController.text.isNotEmpty) {
       final prompt = _textInputController.text;
       _isLoading = true;
-      setState(() async {
-        final message = MessageModel(id:await _database.contQuerry(), message: prompt, messageFrom: MessageFrom.USER);
-        _database.insertMessage(message);
+      setState(()  {
+        _messages.add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
         _textInputController.clear();
         scrollDown();
       });
@@ -270,11 +256,10 @@ class _MainscreenState extends State<Mainscreen> {
         resp = await _controller.onSendMessage(prompt);
       }
       
-      setState(() async {
+      setState(() {
         imageFile = null;
         _isPicked = false;
-        _messages.add(MessageModel(
-          id: await _database.contQuerry(),  message: resp, messageFrom: MessageFrom.IA));
+        _messages.add(MessageModel(message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
       });
       _isLoading = false;
