@@ -20,7 +20,7 @@ class SQLiteCore {
   }
 
   static Future<Database> _getDatabase() async {
-    return openDatabase('produtos.db', version: 1,
+    return openDatabase('prompts.db', version: 1,
         onCreate: (Database database, int version) async {
           await _createTablePrompts(database);
         }
@@ -57,21 +57,21 @@ class SQLiteCore {
     return prompt;
   }
 
-  static Future<Prompt?> getPromptByUserId(String id) async {
+  static Future<List<Prompt>> getPromptByUserId(String id) async {
     final db = await _getDatabase();
-    List<Map<String, dynamic>> dados = await db.query(_dbName, where: "userID = ?", whereArgs: [id], limit: 1);
-    Prompt? prompt;
-    if(dados.isNotEmpty && dados[0].isNotEmpty) {
-      prompt = Prompt.fromMap(dados[0]);
+    List<Map<String, dynamic>> dados = await db.query(_dbName, where: "userID = ?", whereArgs: [id]);
+    List<Prompt> prompts = [];
+    for (var element in dados) {
+      prompts.add(Prompt.fromMap(element));
     }
-    return prompt;
+
+    return prompts;
   }
 
   static Future<int> updatePrompt(Prompt prompt) async {
     final db = await _getDatabase();
 
     final dados = prompt.toMap();
-    print(dados);
 
     final result = await db.update(_dbName, dados, where: "id = ?", whereArgs: [prompt.id]);
     return result;
