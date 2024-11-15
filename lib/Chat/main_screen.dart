@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'package:jarvis_assistant/Prompt/prompt_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jarvis_assistent/Chat/gemini_controller.dart';
-import 'package:jarvis_assistent/Chat/message_model.dart';
-import 'package:jarvis_assistent/Utils/configs.dart';
-import 'package:jarvis_assistent/Utils/utils.dart';
-import 'package:jarvis_assistent/Themes/themes.dart';
-import 'package:jarvis_assistent/About/about_screen.dart';
-import 'package:jarvis_assistent/Login/login_view.dart';
+import 'package:jarvis_assistant/Chat/gemini_controller.dart';
+import 'package:jarvis_assistant/Chat/message_model.dart';
+import 'package:jarvis_assistant/Utils/configs.dart';
+import 'package:jarvis_assistant/Utils/utils.dart';
+import 'package:jarvis_assistant/Themes/themes.dart';
+import 'package:jarvis_assistant/About/about_screen.dart';
+import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -30,12 +31,13 @@ class _MainscreenState extends State<Mainscreen> {
   final imagePicker = ImagePicker();
   File? imageFile;
 
-  void initState(){
+  @override
+  void initState() {
     _controller = GeminiController(
       GenerativeModel(
         model: 'gemini-1.5-flash', 
-        apiKey: API_KEY)
-      )..startChat();
+        apiKey: API_KEY),
+        )..startChat();
     super.initState();
   }
 
@@ -208,11 +210,23 @@ class _MainscreenState extends State<Mainscreen> {
             title: const Text('About App'),
             textColor: AppTheme.textColor,
             onTap: () {
-              Navigator.pop(context); 
+              Navigator.pop(context);
               Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AboutPage()),
                 );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.terminal_sharp, color: AppTheme.secondaryColor),
+            title: const Text('Prompts'),
+            textColor: AppTheme.textColor,
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PromptsScreen()),
+              );
             },
           ),
           ListTile(
@@ -224,7 +238,7 @@ class _MainscreenState extends State<Mainscreen> {
               Navigator.pop(context); // Close the drawer
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
             },
           ),
@@ -238,9 +252,8 @@ class _MainscreenState extends State<Mainscreen> {
     if (_textInputController.text.isNotEmpty) {
       final prompt = _textInputController.text;
       _isLoading = true;
-      setState(() {
-        _messages
-            .add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
+      setState(()  {
+        _messages.add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
         _textInputController.clear();
         scrollDown();
       });
@@ -256,8 +269,7 @@ class _MainscreenState extends State<Mainscreen> {
       setState(() {
         imageFile = null;
         _isPicked = false;
-        _messages.add(MessageModel(
-            message: resp, messageFrom: MessageFrom.IA));
+        _messages.add(MessageModel(message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
       });
       _isLoading = false;
