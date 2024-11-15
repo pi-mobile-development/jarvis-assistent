@@ -108,7 +108,7 @@ class _MainscreenState extends State<Mainscreen> {
               const Spacer(),
             Container(
               margin: const EdgeInsets.all(12),
-              width: MediaQuery.of(context as BuildContext).size.width * 0.7,
+              width: MediaQuery.of(context).size.width * 0.7,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                   color: _messages[index].messageFrom == MessageFrom.USER
@@ -210,9 +210,9 @@ class _MainscreenState extends State<Mainscreen> {
             title: const Text('About App'),
             textColor: AppTheme.textColor,
             onTap: () {
-              Navigator.pop(context as BuildContext);
+              Navigator.pop(context);
               Navigator.push(
-                  context as BuildContext,
+                  context,
                   MaterialPageRoute(builder: (context) => AboutPage()),
                 );
             },
@@ -222,9 +222,9 @@ class _MainscreenState extends State<Mainscreen> {
             title: const Text('Prompts'),
             textColor: AppTheme.textColor,
             onTap: () {
-              Navigator.pop(context as BuildContext);
+              Navigator.pop(context);
               Navigator.push(
-                context as BuildContext,
+                context,
                 MaterialPageRoute(builder: (context) => const PromptsScreen()),
               );
             },
@@ -235,10 +235,10 @@ class _MainscreenState extends State<Mainscreen> {
             textColor: AppTheme.textColor,
             onTap: () async {
               await signOut();
-              Navigator.pop(context as BuildContext); // Close the drawer
+              Navigator.pop(context); // Close the drawer
               Navigator.push(
-                  context as BuildContext,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
             },
           ),

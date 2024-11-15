@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: isLoggedIn ? Mainscreen() : LoginPage(),
+        home: isLoggedIn ? const Mainscreen() : const LoginPage(),
     );
   }
 }

@@ -13,7 +13,7 @@ class PromptsScreen extends StatefulWidget {
 }
 
 class _PromptsScreenState extends State<PromptsScreen> {
-  PromptController _controller = PromptController();
+  final PromptController _controller = PromptController();
   List<Prompt> _prompts = [];
   bool _updated = true;
 
@@ -78,7 +78,7 @@ class _PromptsScreenState extends State<PromptsScreen> {
             ),
             TextButton(
               onPressed: () => _confirmDeletePrompt(prompt),
-              child: Text('Apagar', style: TextStyle(color: Colors.red)),
+              child: const Text('Apagar', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -113,7 +113,7 @@ class _PromptsScreenState extends State<PromptsScreen> {
                 ));
                 await _updatePrompts();
               },
-              child: Text('Deletar', style: TextStyle(color: Colors.red)),
+              child: const Text('Deletar', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -185,7 +185,7 @@ class _PromptsScreenState extends State<PromptsScreen> {
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Prompt copiado para área de transferência.')),
+      const SnackBar(content: Text('Prompt copiado para área de transferência.')),
     );
   }
 
@@ -202,9 +202,9 @@ class _PromptsScreenState extends State<PromptsScreen> {
         title: Text('Prompts', style: TextStyle(color: AppTheme.textColor)),
         backgroundColor: AppTheme.appBarColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppTheme.secondaryColor), // Botão de voltar, VOLTA VIDA
+          icon: Icon(Icons.arrow_back, color: AppTheme.secondaryColor),
           onPressed: () {
-            Navigator.pop(context); // Trocar pra tela principal, tem que fazer esse codiguin ai
+            Navigator.pop(context);
           },
         )
       ),
@@ -219,7 +219,7 @@ class _PromptsScreenState extends State<PromptsScreen> {
                 color: AppTheme.primaryColor.withOpacity(0.1), // Slightly lighter color for card background
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(16),
+                  contentPadding: const EdgeInsets.all(16),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -233,9 +233,9 @@ class _PromptsScreenState extends State<PromptsScreen> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(prompt.prompt, style: TextStyle(color: AppTheme.textColor)),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

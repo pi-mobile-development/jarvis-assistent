@@ -2,6 +2,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:jarvis_assistant/Utils/configs.dart';
 import '../Utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'login_model.dart';
 
 class LoginController {
@@ -30,7 +31,7 @@ class LoginController {
 
       //return userCredential.user; // Retorna o usuário autenticado
     } catch (error) {
-      print("Login failed: $error");
+      debugPrint("Login failed: $error");
       return false;
     }
   }

@@ -93,10 +93,10 @@ class _LoginPageState extends State<LoginPage> {
           if (success) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Mainscreen()),
+              MaterialPageRoute(builder: (context) => const Mainscreen()),
             );
           } else {
-            print("Falha no login");
+            debugPrint("Falha no login");
           }
 
           setState(() {
@@ -104,9 +104,9 @@ class _LoginPageState extends State<LoginPage> {
           });
         },
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(const Color(0xff9489F5)),
-          foregroundColor: MaterialStateProperty.all<Color>(AppTheme.textColor),
-          minimumSize: MaterialStateProperty.all<Size>(const Size(300, 60)),
+          backgroundColor: WidgetStateProperty.all<Color>(const Color(0xff9489F5)),
+          foregroundColor: WidgetStateProperty.all<Color>(AppTheme.textColor),
+          minimumSize: WidgetStateProperty.all<Size>(const Size(300, 60)),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
