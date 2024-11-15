@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jarvis_assistant/Themes/themes.dart';
-import 'package:jarvis_assistant/Chat/main_screen.dart';
+import 'package:jarvis_assistant/Chat/chat_view.dart';
 import 'package:jarvis_assistant/Login/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
           if (success) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Mainscreen()),
+              MaterialPageRoute(builder: (context) => const ChatView()),
             );
           } else {
             debugPrint("Falha no login");

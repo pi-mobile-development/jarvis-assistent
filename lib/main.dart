@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jarvis_assistant/Chat/main_screen.dart';
+import 'package:jarvis_assistant/Chat/chat_view.dart';
 import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jarvis_assistant/Utils/configs.dart';
@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: isLoggedIn ? const Mainscreen() : const LoginPage(),
+        home: isLoggedIn ? const ChatView() : const LoginPage(),
     );
   }
 }
