@@ -1,26 +1,28 @@
 import 'dart:io';
+import 'package:jarvis_assistant/Chat/chat_controller.dart';
 import 'package:jarvis_assistant/Prompt/prompt_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jarvis_assistant/Chat/gemini_controller.dart';
-import 'package:jarvis_assistant/Chat/message_model.dart';
+import 'package:jarvis_assistant/Chat/chat_model.dart';
 import 'package:jarvis_assistant/Utils/configs.dart';
 import 'package:jarvis_assistant/Utils/utils.dart';
 import 'package:jarvis_assistant/Themes/themes.dart';
 import 'package:jarvis_assistant/About/about_screen.dart';
 import 'package:jarvis_assistant/Login/login_view.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
 
 
-class Mainscreen extends StatefulWidget {
-  const Mainscreen({super.key});
+class ChatView extends StatefulWidget {
+  const ChatView({super.key});
 
   @override
-  State<Mainscreen> createState() => _MainscreenState();
+  State<ChatView> createState() => _ChatViewState();
 }
 
-class _MainscreenState extends State<Mainscreen> {
+class _ChatViewState extends State<ChatView> {
   final _textInputController = TextEditingController();
   final _scrollController = ScrollController();
   final _messages = <MessageModel>[];
@@ -28,6 +30,7 @@ class _MainscreenState extends State<Mainscreen> {
   bool _isLoading = false;
   bool _isPicked = false;
   late final GeminiController _controller;
+  late final ChatController chatController;
   final imagePicker = ImagePicker();
   File? imageFile;
 
@@ -38,6 +41,8 @@ class _MainscreenState extends State<Mainscreen> {
         model: 'gemini-1.5-flash', 
         apiKey: API_KEY),
         )..startChat();
+
+    chatController = ChatController();
     super.initState();
   }
 
@@ -276,9 +281,22 @@ class _MainscreenState extends State<Mainscreen> {
     }
   }
 
-  void _recordAudio() {
+  Future<void> _recordAudio() async {
     setState(() {
       _isRecording = !_isRecording;
+    });
+
+    if(_isRecording) {
+      await chatController.startListening(_onSpeechResult);
+    } else {
+      await chatController.stopListening();
+    }
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _textInputController.clear();
+      _textInputController.text+= "${result.recognizedWords} ";
     });
   }
 
