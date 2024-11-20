@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:jarvis_assistant/Chat/chat_controller.dart';
 import 'package:jarvis_assistant/Prompt/prompt_view.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _ChatViewState extends State<ChatView> {
   final _messages = <MessageModel>[];
   bool _isRecording = false;
   bool _isLoading = false;
-  bool _isPicked = false;
+  bool _isImagePicked = false;
   late final GeminiController _controller;
   late final ChatController chatController;
   final imagePicker = ImagePicker();
@@ -120,9 +121,19 @@ class _ChatViewState extends State<ChatView> {
                       ? const Color(0xAA1a1f24).withOpacity(0.5)
                       : AppTheme.secondaryColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12)),
-              child: Text(
-                _messages[index].message,
-                style: TextStyle(color: AppTheme.textColor, fontSize: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if(_messages[index].imagePath != null) ...[
+                    Image(image: FileImage(File(_messages[index].imagePath!)), width: 300, height: 300),
+                    const SizedBox(height: 20),
+                  ],
+                  Text(
+                    _messages[index].message,
+                    style: TextStyle(color: AppTheme.textColor, fontSize: 20),
+                  )
+                ],
               )
             ),
           ],
@@ -137,14 +148,18 @@ class _ChatViewState extends State<ChatView> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon( _isPicked ? Icons.check : Icons.add_photo_alternate),
+            icon: Icon( _isImagePicked ? Icons.check : Icons.add_photo_alternate),
             onPressed: _pickImage,
             color: AppTheme.secondaryColor,
           ),
-          IconButton(
-            icon: Icon(_isRecording ? Icons.stop : Icons.mic),
-            onPressed: _recordAudio,
-            color: AppTheme.secondaryColor
+          AvatarGlow(
+            animate: _isRecording,
+            glowColor: _isRecording? AppTheme.secondaryColor : AppTheme.primaryColor,
+            child: IconButton(
+                icon: Icon(_isRecording ? Icons.stop : Icons.mic),
+                onPressed: _recordAudio,
+                color: AppTheme.secondaryColor
+            )
           ),
           Expanded(
             child: TextField(
@@ -159,7 +174,7 @@ class _ChatViewState extends State<ChatView> {
               controller: _textInputController,
               decoration: InputDecoration(
                 hintText: 'Digite sua pergunta',
-                hintStyle: TextStyle(color: AppTheme.textColor),
+                hintStyle: TextStyle(color: AppTheme.textColor.withOpacity(0.5)),
                 enabledBorder: AppTheme.outlineInputBorder,
                 fillColor: AppTheme.appBarColor,
                 focusedBorder: AppTheme.outlineInputBorder,
@@ -257,8 +272,13 @@ class _ChatViewState extends State<ChatView> {
     if (_textInputController.text.isNotEmpty) {
       final prompt = _textInputController.text;
       _isLoading = true;
+
+      String? imagePath = _isImagePicked ? imageFile!.path : null;
+
       setState(()  {
-        _messages.add(MessageModel(message: prompt, messageFrom: MessageFrom.USER));
+        _messages.add(
+            MessageModel(message: prompt, messageFrom: MessageFrom.USER, imagePath: imagePath)
+        );
         _textInputController.clear();
         scrollDown();
       });
@@ -273,7 +293,7 @@ class _ChatViewState extends State<ChatView> {
       
       setState(() {
         imageFile = null;
-        _isPicked = false;
+        _isImagePicked = false;
         _messages.add(MessageModel(message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
       });
@@ -287,6 +307,9 @@ class _ChatViewState extends State<ChatView> {
     });
 
     if(_isRecording) {
+      setState(() {
+        _textInputController.clear();
+      });
       await chatController.startListening(_onSpeechResult);
     } else {
       await chatController.stopListening();
@@ -295,8 +318,7 @@ class _ChatViewState extends State<ChatView> {
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
-      _textInputController.clear();
-      _textInputController.text+= "${result.recognizedWords} ";
+      _textInputController.text = "${result.recognizedWords} ";
     });
   }
 
@@ -305,14 +327,14 @@ class _ChatViewState extends State<ChatView> {
       if(imageFile != null){
         setState(() {
           imageFile = null;
-          _isPicked = false;
+          _isImagePicked = false;
         });
       }else{
       final pickedFile =  await imagePicker.pickImage(source: ImageSource.gallery);
       if(pickedFile != null){
         setState(() {
           imageFile = File(pickedFile.path);
-          _isPicked = true;
+          _isImagePicked = true;
         });
       }
       }

@@ -14,7 +14,14 @@ class ChatController {
   }
 
   Future<void> startListening(Function(SpeechRecognitionResult) callback) async {
-    await _speechToText.listen(onResult: callback, listenMode: ListenMode.dictation);
+    await _speechToText.listen(
+        onResult: callback,
+        listenOptions: SpeechListenOptions(
+          listenMode: ListenMode.dictation,
+          cancelOnError: false,
+          partialResults: true,
+        )
+    );
   }
 
   Future<void> stopListening() async {
