@@ -20,10 +20,9 @@ class AboutPage extends StatelessWidget {
         title: const Text("Sobre o App", style: TextStyle(color: Color(0xFFF8F8F2))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
-              color: Color(0xFF8BE9FD)), // Botão de voltar, VOLTA VIDA
+              color: Color(0xFF8BE9FD)),
           onPressed: () {
-            Navigator.pop(
-                context); // Trocar pra tela principal, tem que fazer esse codiguin ai
+            Navigator.pop(context);
           },
         ),
       ),
@@ -54,11 +53,7 @@ class AboutPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Image.network(
-                    "https://media.licdn.com/dms/image/v2/D4D22AQFkFzGjFcVSEg/feedshare-shrink_2048_1536/feedshare-shrink_2048_1536/0/1718460036903?e=2147483647&v=beta&t=81wRif-_BQNbBrqhtKfoQX6mD5xd-5CI-9QjSaABkxI", // FACA LOGO DO APP
-                    width: 100,
-                    height: 100,
-                  ),
+                  Image.asset('assets/jarvis_without_background.png', width: 100, height: 100),
                   const SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +69,7 @@ class AboutPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "1.4.2", // Versão do app
+                        "0.0.1", // Versão do app
                         style: GoogleFonts.poppins(
                           textStyle: const TextStyle(
                             fontSize: 16,
