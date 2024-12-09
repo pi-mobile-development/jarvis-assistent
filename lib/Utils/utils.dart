@@ -12,6 +12,7 @@ void setLoggedUser() {
       username: auth.currentUser!.displayName!,
       email: auth.currentUser!.email!,
       userID: auth.currentUser!.uid,
-      photoUrl: auth.currentUser!.photoURL
+      photoUrl: auth.currentUser!.photoURL,
+      phoneNumber: auth.currentUser!.phoneNumber
   );
 }

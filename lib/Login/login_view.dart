@@ -27,11 +27,11 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 10),
                 _logo(),
-                const SizedBox(height: 30),
-                _welcomeText(),
                 const SizedBox(height: 40),
+                _welcomeText(),
+                const SizedBox(height: 50),
                 _googleButton(),
                 if (_isLoading) _loadingIndicator(),
               ],
@@ -43,16 +43,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _logo() {
-    return const Icon(
-      Icons.adb_sharp,
-      size: 200,
-      color: Color(0xff9489F5),
-    );
+    return Image.asset('assets/jarvis_without_background.png');
   }
 
   Widget _welcomeText() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
             Text(
@@ -60,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
               maxLines: 1,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 19,
                 color: AppTheme.textColor,
                 fontWeight: FontWeight.bold,
               ),
@@ -70,9 +66,9 @@ class _LoginPageState extends State<LoginPage> {
             "Faça login com sua conta Google para que eu possa lhe auxiliar em seus desejos.",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               color: AppTheme.textColor,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.normal,
             ),
           ),
         ],
@@ -91,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
 
           var success = await loginController.loginGoogle();
           if (success) {
+            Navigator.pop(context);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ChatView()),
