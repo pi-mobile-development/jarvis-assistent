@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/services.dart';
 import 'package:jarvis_assistant/Chat/chat_controller.dart';
+import 'package:jarvis_assistant/Chat/firestore_controler.dart';
 import 'package:jarvis_assistant/Commons/prompts.dart';
 import 'package:jarvis_assistant/Prompt/prompt_view.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +35,10 @@ class _ChatViewState extends State<ChatView> {
   bool _isImagePicked = false;
   late final GeminiController _controller;
   late final ChatController chatController;
+  final FirestoreController _firestoreController = FirestoreController();
   final imagePicker = ImagePicker();
   File? imageFile;
+  late StreamSubscription<List<MessageModel>> _messagesSubscription;
 
   @override
   void initState() {
@@ -46,7 +50,20 @@ class _ChatViewState extends State<ChatView> {
 
     _initJarvis();
     chatController = ChatController();
+    _messagesSubscription = _firestoreController.getMessages().listen((messageList) {
+    setState(() {
+      _messages.clear();
+      _messages.addAll(messageList);
+    });
+  });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Cancelando a assinatura para evitar vazamentos de memória
+    _messagesSubscription.cancel();
+    super.dispose();
   }
 
   void _initJarvis() async {
@@ -108,6 +125,71 @@ class _ChatViewState extends State<ChatView> {
       ),
     );
   }
+
+  /*Widget Stream() {
+  return StreamBuilder<List<MessageModel>>(
+    stream: _firestoreController.getMessages(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      }
+
+      if (snapshot.hasError) {
+        return Center(child: Text('Erro ao carregar mensagens'));
+      }
+
+      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        return Center(child: Text('Nenhuma mensagem encontrada'));
+      }
+
+      final messages = snapshot.data!; // Aqui estão suas mensagens.
+
+      return ListView.builder(
+        controller: _scrollController,
+      itemCount: messages.length,
+      itemBuilder: (_, int index) {
+        return GestureDetector(
+            onLongPress: () {
+              if(messages[index].messageFrom == MessageFrom.IA) {
+                _showOptionsMenu(context, messages[index].message, index);
+              }
+            },
+            child: Row(
+            children: [
+              if (messages[index].messageFrom == MessageFrom.USER)
+                const Spacer(),
+              Container(
+                margin: const EdgeInsets.all(12),
+                width: MediaQuery.of(context).size.width * 0.7,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: messages[index].messageFrom == MessageFrom.USER
+                        ? const Color(0xAA1a1f24).withOpacity(0.5)
+                        : AppTheme.secondaryColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if(messages[index].imagePath != null) ...[
+                      Image(image: FileImage(File(_messages[index].imagePath!)), width: 300, height: 300),
+                      const SizedBox(height: 20),
+                    ],
+                    Text(
+                      messages[index].message,
+                      style: TextStyle(color: AppTheme.textColor, fontSize: 20),
+                    )
+                  ],
+                )
+              ),
+            ],
+          )
+        );
+      }    
+      );
+    },
+  );
+}*/
 
   ListView _buildMessageView() {
     return ListView.builder(
@@ -287,13 +369,18 @@ class _ChatViewState extends State<ChatView> {
 
       String? imagePath = _isImagePicked ? imageFile!.path : null;
 
-      setState(()  {
+      final userMessage = MessageModel(
+        message: prompt, 
+        messageFrom: MessageFrom.USER, 
+        imagePath: imagePath);
+      await _firestoreController.saveMessage(userMessage);
+      /*setState(()  {
         _messages.add(
-            MessageModel(message: prompt, messageFrom: MessageFrom.USER, imagePath: imagePath)
-        );
+            userMessage
+        );        
         _textInputController.clear();
         scrollDown();
-      });
+      });*/
       
       String resp;
 
@@ -302,13 +389,18 @@ class _ChatViewState extends State<ChatView> {
       }else{
         resp = await _controller.onSendMessage(prompt);
       }
+
+      final iaMessage = MessageModel(
+        message: resp, 
+        messageFrom: MessageFrom.IA);
+      await _firestoreController.saveMessage(iaMessage);
       
-      setState(() {
+      /*setState(() {
         imageFile = null;
         _isImagePicked = false;
         _messages.add(MessageModel(message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
-      });
+      });*/
       _isLoading = false;
     }
   }

@@ -11,13 +11,22 @@ class MessageModel {
     this.imagePath
   });
 
-  Map<String, Object?> toMap() {
+  // Converte para Map para salvar no Firestore
+  Map<String, dynamic> toMap() {
     return {
-      //'id': id,
       'message': message,
-      'who': messageFrom,
-      'image': imagePath
+      'messageFrom': messageFrom.name, // Salva como string
+      'imagePath': imagePath,
     };
+  }
+
+  // Converte de Map para MessageModel
+  factory MessageModel.fromMap(Map<String, dynamic> map) {
+    return MessageModel(
+      message: map['message'] ?? '',
+      messageFrom: MessageFrom.values.firstWhere((e) => e.name == map['messageFrom']),
+      imagePath: map['imagePath'],
+    );
   }
 
   @override
