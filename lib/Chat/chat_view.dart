@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:jarvis_assistant/Chat/chat_controller.dart';
 import 'package:jarvis_assistant/Chat/firestore_controler.dart';
@@ -374,13 +375,10 @@ class _ChatViewState extends State<ChatView> {
         messageFrom: MessageFrom.USER, 
         imagePath: imagePath);
       await _firestoreController.saveMessage(userMessage);
-      /*setState(()  {
-        _messages.add(
-            userMessage
-        );        
+      setState(()  {      
         _textInputController.clear();
         scrollDown();
-      });*/
+      });
       
       String resp;
 
@@ -392,15 +390,14 @@ class _ChatViewState extends State<ChatView> {
 
       final iaMessage = MessageModel(
         message: resp, 
-        messageFrom: MessageFrom.IA);
+        messageFrom: MessageFrom.IA,);
       await _firestoreController.saveMessage(iaMessage);
       
-      /*setState(() {
+      setState(() {
         imageFile = null;
         _isImagePicked = false;
-        _messages.add(MessageModel(message: resp, messageFrom: MessageFrom.IA));
         scrollDown();
-      });*/
+      });
       _isLoading = false;
     }
   }
