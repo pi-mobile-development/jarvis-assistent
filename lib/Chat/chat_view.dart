@@ -39,7 +39,6 @@ class _ChatViewState extends State<ChatView> {
   final FirestoreController _firestoreController = FirestoreController();
   final imagePicker = ImagePicker();
   File? imageFile;
-  late StreamSubscription<List<MessageModel>> _messagesSubscription;
 
   @override
   void initState() {
@@ -51,20 +50,8 @@ class _ChatViewState extends State<ChatView> {
 
     _initJarvis();
     chatController = ChatController();
-    _messagesSubscription = _firestoreController.getMessages().listen((messageList) {
-    setState(() {
-      _messages.clear();
-      _messages.addAll(messageList);
-    });
-  });
+    _loadMessages();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    // Cancelando a assinatura para evitar vazamentos de memória
-    _messagesSubscription.cancel();
-    super.dispose();
   }
 
   void _initJarvis() async {
@@ -126,71 +113,6 @@ class _ChatViewState extends State<ChatView> {
       ),
     );
   }
-
-  /*Widget Stream() {
-  return StreamBuilder<List<MessageModel>>(
-    stream: _firestoreController.getMessages(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      }
-
-      if (snapshot.hasError) {
-        return Center(child: Text('Erro ao carregar mensagens'));
-      }
-
-      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return Center(child: Text('Nenhuma mensagem encontrada'));
-      }
-
-      final messages = snapshot.data!; // Aqui estão suas mensagens.
-
-      return ListView.builder(
-        controller: _scrollController,
-      itemCount: messages.length,
-      itemBuilder: (_, int index) {
-        return GestureDetector(
-            onLongPress: () {
-              if(messages[index].messageFrom == MessageFrom.IA) {
-                _showOptionsMenu(context, messages[index].message, index);
-              }
-            },
-            child: Row(
-            children: [
-              if (messages[index].messageFrom == MessageFrom.USER)
-                const Spacer(),
-              Container(
-                margin: const EdgeInsets.all(12),
-                width: MediaQuery.of(context).size.width * 0.7,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: messages[index].messageFrom == MessageFrom.USER
-                        ? const Color(0xAA1a1f24).withOpacity(0.5)
-                        : AppTheme.secondaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if(messages[index].imagePath != null) ...[
-                      Image(image: FileImage(File(_messages[index].imagePath!)), width: 300, height: 300),
-                      const SizedBox(height: 20),
-                    ],
-                    Text(
-                      messages[index].message,
-                      style: TextStyle(color: AppTheme.textColor, fontSize: 20),
-                    )
-                  ],
-                )
-              ),
-            ],
-          )
-        );
-      }    
-      );
-    },
-  );
-}*/
 
   ListView _buildMessageView() {
     return ListView.builder(
@@ -375,7 +297,10 @@ class _ChatViewState extends State<ChatView> {
         messageFrom: MessageFrom.USER, 
         imagePath: imagePath);
       await _firestoreController.saveMessage(userMessage);
-      setState(()  {      
+      setState(()  {
+        _messages.add(
+            userMessage
+        );        
         _textInputController.clear();
         scrollDown();
       });
@@ -527,5 +452,12 @@ class _ChatViewState extends State<ChatView> {
     ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(content: Text(message))
     );
+  }
+
+  Future<void> _loadMessages() async {
+    List<MessageModel> history = await _firestoreController.getMessages();
+    setState(() {
+      _messages.addAll(history);
+    });
   }
 }
