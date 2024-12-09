@@ -13,6 +13,6 @@ const FirebaseOptions firebaseOptions = FirebaseOptions(
   projectId: "jarvis-assistant-958d5",
   storageBucket: "jarvis-assistant-958d5.appspot.com",
 );
-const API_KEY = '';
+const API_KEY = 'AIzaSyByU5WLl6akjENpcroYt2XeQTbbTWt4e1Y';
 
 late UserModel loggedUser;
