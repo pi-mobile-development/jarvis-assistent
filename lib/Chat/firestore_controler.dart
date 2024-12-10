@@ -13,7 +13,7 @@ class FirestoreController {
 
   Future<List<MessageModel>> getMessages() async {
     List<MessageModel> messages = [];
-    final snapshot = await _firestore.collection('usuarios/${loggedUser.userID}/messages').get();
+    final snapshot = await _firestore.collection('usuarios/${loggedUser.userID}/messages').orderBy('timestamp', descending: false).get();
     snapshot.docs.forEach((doc) {
       messages.add(MessageModel.fromMap(doc.data()));
     });
