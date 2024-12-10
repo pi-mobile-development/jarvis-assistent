@@ -321,6 +321,7 @@ class _ChatViewState extends State<ChatView> {
       setState(() {
         imageFile = null;
         _isImagePicked = false;
+        _messages.add(iaMessage);
         scrollDown();
       });
       _isLoading = false;
@@ -459,5 +460,6 @@ class _ChatViewState extends State<ChatView> {
     setState(() {
       _messages.addAll(history);
     });
+    scrollDown();
   }
 }
